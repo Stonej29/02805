@@ -9,7 +9,7 @@ from pyproj import Transformer
 
 # Read the combined fire data
 print("Loading fire detection data...")
-df = pd.read_csv('combined_fire_detections.csv')
+df = pd.read_csv('../data/nasa/combined_fire_detections.csv')
 
 # Convert datetime column to datetime type
 df['datetime'] = pd.to_datetime(df['datetime'])
@@ -166,7 +166,7 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                               blit=True, repeat=True)
 
 # Save as MP4 (requires ffmpeg) or GIF
-output_file = 'california_wildfires_animation.gif'
+output_file = '../figures/california_wildfires_animation.gif'
 print(f"Saving animation to {output_file}...")
 print("This may take a few minutes...")
 
@@ -178,7 +178,7 @@ except Exception as e:
     print(f"Error saving as GIF: {e}")
     try:
         # Try to save as MP4
-        output_file = 'california_wildfires_animation.mp4'
+        output_file = '../figures/california_wildfires_animation.mp4'
         anim.save(output_file, writer='ffmpeg', fps=5, dpi=100)
         print(f"✓ Animation saved as: {output_file}")
     except Exception as e2:

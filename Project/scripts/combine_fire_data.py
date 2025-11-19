@@ -4,9 +4,9 @@ import os
 # Read all three fire detection CSV files
 print("Reading fire detection data files...")
 
-nrt_file = "data/fire_nrt_J2V-C2_686636.csv"
-archive_sv_file = "data/fire_archive_SV-C2_686637.csv"
-archive_j1v_file = "data/fire_archive_J1V-C2_686635.csv"
+nrt_file = "../data/nasa/fire_nrt_J2V-C2_686636.csv"
+archive_sv_file = "../data/nasa/fire_archive_SV-C2_686637.csv"
+archive_j1v_file = "../data/nasa/fire_archive_J1V-C2_686635.csv"
 
 df_nrt = pd.read_csv(nrt_file)
 df_sv = pd.read_csv(archive_sv_file)
@@ -75,7 +75,7 @@ column_order = ['datetime', 'latitude', 'longitude', 'acq_date', 'acq_time',
 df_final = df_final[column_order]
 
 # Save the combined dataset
-output_file = "combined_fire_detections.csv"
+output_file = "../data/nasa/combined_fire_detections.csv"
 df_final.to_csv(output_file, index=False)
 
 print(f"\n✓ Combined dataset saved to: {output_file}")

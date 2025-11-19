@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Load fire detection data
 print("Loading fire detection data...")
-fire_data = pd.read_csv('combined_fire_detections.csv')
+fire_data = pd.read_csv('../data/nasa/combined_fire_detections.csv')
 fire_data['datetime'] = pd.to_datetime(fire_data['datetime'], utc=True)
 fire_data['hour'] = fire_data['datetime'].dt.floor('h')
 
@@ -18,7 +18,7 @@ fire_by_hour.columns = ['hour', 'total_frp', 'detection_count']
 
 # Load Bluesky posts data
 print("Loading Bluesky posts data...")
-posts = pd.read_json('ca_fire_20250101_20250207.jsonl', lines=True)
+posts = pd.read_json('../data/bluesky/ca_fire_20250101_20250207.jsonl', lines=True)
 posts['indexed_at'] = pd.to_datetime(posts['indexed_at'], utc=True)
 posts['hour'] = posts['indexed_at'].dt.floor('h')
 
@@ -68,7 +68,7 @@ ax1.legend(lines, labels, loc='upper left', fontsize=10)
 fig.tight_layout()
 
 # Save the figure
-output_file = 'fire_vs_posts_hourly.png'
+output_file = '../figures/fire_vs_posts_hourly.png'
 plt.savefig(output_file, dpi=300, bbox_inches='tight')
 print(f"Plot saved to {output_file}")
 

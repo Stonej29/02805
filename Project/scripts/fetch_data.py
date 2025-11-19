@@ -5,9 +5,9 @@ import json, time, math
 START = datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc) # Jan 1st
 END   = datetime(2025, 2, 7, 0, 0, tzinfo=timezone.utc) # Feb 7th
 
-POST_FILE  = 'ca_fire_20250101_20250207.jsonl'
-INTERACT_FILE= 'interactions_20250101_20250207.jsonl'
-LOG_FILE   = 'all_read_dates.txt'
+POST_FILE  = '../data/bluesky/ca_fire_20250101_20250207.jsonl'
+INTERACT_FILE= '../data/bluesky/interactions_20250101_20250207.jsonl'
+LOG_FILE   = '../data/bluesky/all_read_dates.txt'
 
 def safe_get(model, path, default=None):
     """walk dot-notation path safely:  safe_get(post, 'record.reply.parent.uri')"""

@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 nltk.download('stopwords', quiet=True)
 stop_en = set(stopwords.words('english'))
 
-def preprocess_posts_and_interactions(posts_file="ca_fire_20250101_20250207.jsonl", interact_file="interactions_20250101_20250207.jsonl"):
+def preprocess_posts_and_interactions(posts_file="../data/bluesky/ca_fire_20250101_20250207.jsonl", interact_file="../data/bluesky/interactions_20250101_20250207.jsonl"):
     """Preprocess posts and interactions from given jsonl files."""
     # ---------- load ----------
     posts  = pd.read_json(posts_file, lines=True)
