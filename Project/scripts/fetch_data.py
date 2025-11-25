@@ -1,6 +1,9 @@
 from atproto import Client
 from datetime import datetime, timezone
 import json, time, math, logging
+import os
+from dateutil.parser import isoparse
+from datetime import time as dt_time
 
 # Configure logging
 logging.basicConfig(
@@ -14,11 +17,11 @@ logger = logging.getLogger(__name__)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger('httpcore').setLevel(logging.WARNING)
 
-START = datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc) # Jan 1st
-END   = datetime(2025, 2, 7, 0, 0, tzinfo=timezone.utc) # Feb 7th
+START = datetime(2025, 1, 14, 0, 0, tzinfo=timezone.utc) # Jan 15st
+END   = datetime(2025, 1, 16, 0, 0, tzinfo=timezone.utc) # Jan 16th
 
-POST_FILE  = '../data/bluesky/ca_fire_20250101_20250207.jsonl'
-INTERACT_FILE= '../data/bluesky/interactions_20250101_20250207.jsonl'
+POST_FILE  = '../data/bluesky/ca_fire_20250114_20250116.jsonl'
+INTERACT_FILE= '../data/bluesky/interactions_20250114_20250116.jsonl'
 LOG_FILE   = '../data/bluesky/all_read_dates.txt'
 
 def safe_get(model, path, default=None):
@@ -48,16 +51,25 @@ def fetch_all_pages(endpoint, params):
 def fetch_posts():
     """Fetch posts with #california + keyword 'fire' from START to END dates, storing posts and interactions"""
     total_posts = 0
-    log         = open(LOG_FILE, 'w', encoding='utf8')
+    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+    log = open(LOG_FILE, 'w', encoding='utf8')
 
     # Initialize client
     logger.info('Initializing Bluesky client...')
     client = Client()
-    client.login("email", "password")
+    
+    with open("../credentials.json", "r", encoding="utf8") as f:
+        creds = json.load(f)
+
+    email = creds["email"]
+    password = creds["password"]
+
+    client.login(email, password)
+
     logger.info('Successfully logged in to Bluesky')
 
     # Base query terms
-    query_terms = 'wildfire | california | evacuation'
+    query_terms = '(wildfire california) | (california evacuation) | (wildfire evacuation)'
 
     # Iterate day by day
     from datetime import timedelta
@@ -83,8 +95,9 @@ def fetch_posts():
             if not rsp.posts:
                 break
 
+            # Process all posts for the day
             for p in rsp.posts:
-                ts = datetime.fromisoformat(p.record.created_at.replace('Z','+00:00'))
+                ts = isoparse(p.record.created_at)  # robust parsing
                 print(ts.date(), ts.time(), file=log)
 
                 # ---------- core post row ----------
