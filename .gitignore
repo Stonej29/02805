@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Credentials
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Data files
+*.jsonl
+*.txt
+data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

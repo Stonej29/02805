@@ -4,6 +4,10 @@ import json, time, math, logging
 import os
 from dateutil.parser import isoparse
 from datetime import time as dt_time
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -17,8 +21,8 @@ logger = logging.getLogger(__name__)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger('httpcore').setLevel(logging.WARNING)
 
-START = datetime(2025, 1, 14, 0, 0, tzinfo=timezone.utc) # Jan 15st
-END   = datetime(2025, 1, 16, 0, 0, tzinfo=timezone.utc) # Jan 16th
+START = datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc) # Jan 15st
+END   = datetime(2025, 2, 7, 0, 0, tzinfo=timezone.utc) # Jan 16th
 
 POST_FILE  = '../data/bluesky/ca_fire_20250114_20250116.jsonl'
 INTERACT_FILE= '../data/bluesky/interactions_20250114_20250116.jsonl'
@@ -57,12 +61,13 @@ def fetch_posts():
     # Initialize client
     logger.info('Initializing Bluesky client...')
     client = Client()
-    
-    with open("../credentials.json", "r", encoding="utf8") as f:
-        creds = json.load(f)
 
-    email = creds["email"]
-    password = creds["password"]
+    # Load credentials from environment variables
+    email = os.getenv("BLUESKY_EMAIL")
+    password = os.getenv("BLUESKY_PASSWORD")
+
+    if not email or not password:
+        raise ValueError("BLUESKY_EMAIL and BLUESKY_PASSWORD must be set in .env file")
 
     client.login(email, password)
 
