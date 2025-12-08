@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import pandas as pd
 from pathlib import Path
 from collections import Counter
 
@@ -162,10 +163,6 @@ def plot_top_communities(communities, G, output_path, top_n=15):
                        key=lambda x: x[1])
         handle = G.nodes[leader].get('author_handle', 'Unknown')
 
-        # Truncate long handles
-        if len(handle) > 25:
-            handle = handle[:22] + '...'
-
         label = f"C{comm_idx}: {handle}"
         labels.append(label)
         sizes.append(size)
@@ -207,7 +204,7 @@ def main():
                        default='../data/bluesky/user_interaction_graph_communities.gml',
                        help='Path to graph with community attributes')
     parser.add_argument('--output', type=str,
-                       default='../figures',
+                       default='../figures/community_stats',
                        help='Output directory for plots')
     parser.add_argument('--top-n', type=int, default=15,
                        help='Number of top communities to display (default: 15)')
