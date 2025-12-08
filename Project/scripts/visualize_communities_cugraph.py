@@ -60,8 +60,9 @@ def visualize_graph(G, positions, node_interactions, author_handles, show_labels
     unique_comms = len(set(communities))
     cmap = plt.colormaps.get_cmap('hsv').resampled(unique_comms)
 
-    # Draw edges
-    nx.draw_networkx_edges(G, positions, alpha=0.1, edge_color='gray', arrows=False)
+    # Draw edges (only for edges where both nodes have positions)
+    valid_edges = [(u, v) for u, v in G.edges() if u in positions and v in positions]
+    nx.draw_networkx_edges(G, positions, edgelist=valid_edges, alpha=0.1, edge_color='gray', arrows=False)
 
     # Draw nodes
     nx.draw_networkx_nodes(
@@ -193,18 +194,32 @@ def main():
     cu_G.from_cudf_edgelist(edge_df, source='src', destination='dst', edge_attr='weight')
 
     print("Computing Force Atlas 2 layout on GPU...")
-    pos_df = cugraph.force_atlas2(
+    #pos_df = cugraph.force_atlas2(
+    #    cu_G,
+    #    max_iter=1000,
+    #    outbound_attraction_distribution=True,
+    #    lin_log_mode=False,
+    #    prevent_overlapping=False,
+    #    edge_weight_influence=1.0,
+    #    jitter_tolerance=1.0,
+    #    barnes_hut_optimize=True,
+    #    barnes_hut_theta=1.0,
+    #    scaling_ratio=2.0,
+    #    gravity=10.0
+    #)
+
+    pos_df = cugraph.layout.force_atlas2(
         cu_G,
-        max_iter=1000,
+        max_iter=5000,
+        pos_list=None,
         outbound_attraction_distribution=True,
-        lin_log_mode=False,
-        prevent_overlapping=False,
-        edge_weight_influence=1.0,
+        lin_log_mode=True,
+        edge_weight_influence=0.5,
         jitter_tolerance=1.0,
         barnes_hut_optimize=True,
-        barnes_hut_theta=1.0,
-        scaling_ratio=2.0,
-        gravity=10.0
+        barnes_hut_theta=0.5,
+        scaling_ratio=100.0,
+        gravity=0.5
     )
 
     # Convert positions to CPU (native Python floats)
